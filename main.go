@@ -6,6 +6,7 @@ import (
 	"os"
 	"container/list"
 	"strings"
+	"time"
 )
 
 type Item struct {
@@ -40,11 +41,11 @@ func main() {
 
 	for i := 0; i < amount; i++ {
 		// Get item data
-		fmt.Println("- Enter item name:")
+		fmt.Println("- Enter item name: ")
 		itemName, _ := reader.ReadString('\n')
 		itemName = strings.TrimSpace(itemName)
 
-		fmt.Println("- Enter item price:")
+		fmt.Println("- Enter item price: $")
 		var itemPrice float64
 		fmt.Scanln(&itemPrice)
 
@@ -56,9 +57,13 @@ func main() {
 	var totalTax float64
 	var totalDue float64
 
-	// Print list
+	// Print receipt
 	fmt.Println("------------------------------------------------")
-	fmt.Println("List:")
+	fmt.Println("Receipt for: ", name)
+	fmt.Println("Date: ", time.Now().Format("02-01-2006 15:04:05"))
+	fmt.Println("------------------------------------------------")
+	fmt.Println("Items:")
+
 	for e := itemList.Front(); e != nil; e = e.Next() {
 		item := e.Value.(Item)
 		fmt.Printf("%s: %.2f\n", item.name, item.price)
@@ -70,8 +75,8 @@ func main() {
 	totalDue = totalValue + totalTax
 
 	fmt.Println("------------------------------------------------")
-	fmt.Printf("Total value: %.2f\n", totalValue)
-	fmt.Printf("Total tax: %.2f\n", totalTax)
-	fmt.Printf("Total due: %.2f\n", totalDue)
+	fmt.Printf("Total value: $%.2f\n", totalValue)
+	fmt.Printf("Total tax: $%.2f\n", totalTax)
+	fmt.Printf("Total due: $%.2f\n", totalDue)
 	fmt.Println("------------------------------------------------")
 }

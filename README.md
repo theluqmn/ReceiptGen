@@ -23,5 +23,5 @@ If you want the .exe, its on Releases.
 
 * [x] it works
 * [ ] input validation
-* [ ] output with more details
+* [x] output with more details
 * [ ] output as .txt
