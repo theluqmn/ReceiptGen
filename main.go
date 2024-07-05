@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 	"os/exec"
+	"strconv"
 )
 
 type Item struct {
@@ -24,26 +25,33 @@ func main() {
 	fmt.Println("Hello, World!")
 
 	// Get user input
-	fmt.Println("- Enter your name:")
+	fmt.Printf("- Enter your name: ")
 	reader := bufio.NewReader(os.Stdin)
 	name, _ := reader.ReadString('\n')
 	name = strings.TrimSpace(name)
 
-	// Greet user
-	fmt.Printf("Hello, %s!\n", name)
-
 	itemList := list.New()
 
 	// Tax rate
-	fmt.Println("- Enter tax rate percentage:")
-	var taxRate float64
-	fmt.Scanln(&taxRate)
+	fmt.Printf("- Enter tax rate percentage: ")
+	taxRateStr, _ := reader.ReadString('\n')
+	taxRateStr = strings.TrimSpace(taxRateStr)
+	taxRate, err:= strconv.ParseFloat(taxRateStr, 64)
+	if err != nil {
+		fmt.Println("Invalid tax rate")
+		return
+	}
 	taxRate /= 100
 
 	// Items to add
-	fmt.Println("- Amount of items to add:")
-	var amount int
-	fmt.Scanln(&amount)
+	fmt.Printf("- Amount of items to add: ")
+	amountStr, _ := reader.ReadString('\n')
+	amountStr = strings.TrimSpace(amountStr)
+	amount, err := strconv.Atoi(amountStr)
+	if err != nil {
+		fmt.Println("Invalid amount")
+		return
+	}
 
 	fmt.Println("\n------------------------------------------------")
 	fmt.Println("Now, enter items.")
@@ -68,15 +76,15 @@ func main() {
 
 	// Print receipt
 	fmt.Println("\n------------------------------------------------")
-	fmt.Println("Receipt for: ", name)
-	fmt.Println("Date: ", time.Now().Format("02-01-2006 15:04:05"))
+	fmt.Println("Receipt for:", name)
+	fmt.Println("Issued at:", time.Now().Format("02-01-2006 15:04:05"))
 	fmt.Println("------------------------------------------------")
-	fmt.Println("Items:")
+	fmt.Printf("Items: %v\n", itemList.Len())
 
 	var count int = 1
 	for e := itemList.Front(); e != nil; e = e.Next() {
 		item := e.Value.(Item)
-		fmt.Printf("%v - %s: %.2f\n", count, item.name, item.price)
+		fmt.Printf("%v/%v - '%s': $%.2f\n", count, itemList.Len(), item.name, item.price)
 
 		totalValue += item.price
 		totalTax += (item.price * taxRate)
