@@ -7,6 +7,7 @@ import (
 	"container/list"
 	"strings"
 	"time"
+	"os/exec"
 )
 
 type Item struct {
@@ -15,10 +16,15 @@ type Item struct {
 }
 
 func main() {
+	// Clear console
+	cmd := exec.Command("cmd", "/c", "cls")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+
 	fmt.Println("Hello, World!")
 
 	// Get user input
-	fmt.Println("Enter your name:")
+	fmt.Println("- Enter your name:")
 	reader := bufio.NewReader(os.Stdin)
 	name, _ := reader.ReadString('\n')
 	name = strings.TrimSpace(name)
@@ -29,23 +35,26 @@ func main() {
 	itemList := list.New()
 
 	// Tax rate
-	fmt.Println("Enter tax rate: (%)")
+	fmt.Println("- Enter tax rate percentage:")
 	var taxRate float64
 	fmt.Scanln(&taxRate)
 	taxRate /= 100
 
 	// Items to add
-	fmt.Println("Amount of items to add:")
+	fmt.Println("- Amount of items to add:")
 	var amount int
 	fmt.Scanln(&amount)
 
+	fmt.Println("\n------------------------------------------------")
+	fmt.Println("Now, enter items.")
+
 	for i := 0; i < amount; i++ {
 		// Get item data
-		fmt.Println("- Enter item name: ")
+		fmt.Printf("%d - Enter item name: ", i + 1)
 		itemName, _ := reader.ReadString('\n')
 		itemName = strings.TrimSpace(itemName)
 
-		fmt.Println("- Enter item price: $")
+		fmt.Printf("%d - Enter item price: $", i + 1)
 		var itemPrice float64
 		fmt.Scanln(&itemPrice)
 
@@ -58,25 +67,28 @@ func main() {
 	var totalDue float64
 
 	// Print receipt
-	fmt.Println("------------------------------------------------")
+	fmt.Println("\n------------------------------------------------")
 	fmt.Println("Receipt for: ", name)
 	fmt.Println("Date: ", time.Now().Format("02-01-2006 15:04:05"))
 	fmt.Println("------------------------------------------------")
 	fmt.Println("Items:")
 
+	var count int = 1
 	for e := itemList.Front(); e != nil; e = e.Next() {
 		item := e.Value.(Item)
-		fmt.Printf("%s: %.2f\n", item.name, item.price)
+		fmt.Printf("%v - %s: %.2f\n", count, item.name, item.price)
 
 		totalValue += item.price
 		totalTax += (item.price * taxRate)
+		count++
 	}
 
 	totalDue = totalValue + totalTax
+	taxRatePercentage := taxRate * 100
 
 	fmt.Println("------------------------------------------------")
 	fmt.Printf("Total value: $%.2f\n", totalValue)
-	fmt.Printf("Total tax: $%.2f\n", totalTax)
+	fmt.Printf("Total tax: $%.2f (%v%%)\n", totalTax, taxRatePercentage)
 	fmt.Printf("Total due: $%.2f\n", totalDue)
 	fmt.Println("------------------------------------------------")
 }
