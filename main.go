@@ -16,13 +16,18 @@ type Item struct {
 	price float64
 }
 
-func main() {
+func clear() {
 	// Clear console
 	cmd := exec.Command("cmd", "/c", "cls")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
+}
 
+func main() {
+	clear()
 	fmt.Println("Hello, World!")
+
+	fmt.Println("Luq's ReceiptGen - Receipt Calculator/Generator")
 
 	// Get user input
 	fmt.Printf("- Enter your name: ")
@@ -53,21 +58,22 @@ func main() {
 		return
 	}
 
-	fmt.Println("\n------------------------------------------------")
+	clear()
 	fmt.Println("Now, enter items.")
 
 	for i := 0; i < amount; i++ {
 		// Get item data
-		fmt.Printf("%d - Enter item name: ", i + 1)
+		fmt.Printf("%d/%v - Enter item name: ", i + 1, amount)
 		itemName, _ := reader.ReadString('\n')
 		itemName = strings.TrimSpace(itemName)
 
-		fmt.Printf("%d - Enter item price: $", i + 1)
+		fmt.Printf("%d/%v - Enter item price: $", i + 1, amount)
 		var itemPrice float64
 		fmt.Scanln(&itemPrice)
 
 		// Add item to list
 		itemList.PushBack(Item{name: itemName, price: itemPrice})
+		clear()
 	}
 
 	var totalValue float64
@@ -79,7 +85,7 @@ func main() {
 	fmt.Println("Receipt for:", name)
 	fmt.Println("Issued at:", time.Now().Format("02-01-2006 15:04:05"))
 	fmt.Println("------------------------------------------------")
-	fmt.Printf("Items: %v\n", itemList.Len())
+	fmt.Printf("Items: %v\n\n", itemList.Len())
 
 	var count int = 1
 	for e := itemList.Front(); e != nil; e = e.Next() {
@@ -96,7 +102,7 @@ func main() {
 
 	fmt.Println("------------------------------------------------")
 	fmt.Printf("Total value: $%.2f\n", totalValue)
-	fmt.Printf("Total tax: $%.2f (%v%%)\n", totalTax, taxRatePercentage)
-	fmt.Printf("Total due: $%.2f\n", totalDue)
+	fmt.Printf("Total tax: $%.2f (%.2f%%)\n", totalTax, taxRatePercentage)
+	fmt.Printf("\nTotal due: $%.2f\n", totalDue)
 	fmt.Println("------------------------------------------------")
 }
