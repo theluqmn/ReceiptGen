@@ -76,6 +76,37 @@ func main() {
 		clear()
 	}
 
+	// Ask for payment method
+
+	var paymentMethod string
+
+	clear()
+	fmt.Println("After entering your payment method,\nthe receipt will be outputted to the console.")
+	fmt.Println("Options:\n- [1] Cash\n- [2] Credit Card\n- [3] Debit Card\n- [4] E-Wallet")
+
+	fmt.Printf("- Enter payment method [1-4]: ")
+	paymentMethod, _ = reader.ReadString('\n')
+	paymentMethod = strings.TrimSpace(paymentMethod)
+
+	paymentMethodInt, err := strconv.Atoi(paymentMethod)
+	if err != nil {
+		fmt.Println("Invalid payment method")
+		return
+	}
+
+	if paymentMethodInt == 1 {
+		paymentMethod = "Cash"
+	} else if paymentMethodInt == 2 {
+		paymentMethod = "Credit Card"
+	} else if paymentMethodInt == 3 {
+		paymentMethod = "Debit Card"
+	} else if paymentMethodInt == 4 {
+		paymentMethod = "E-Wallet"
+	} else {
+		fmt.Println("Invalid payment method")
+		return
+	}
+
 	var totalValue float64
 	var totalTax float64
 	var totalDue float64
@@ -104,5 +135,6 @@ func main() {
 	fmt.Printf("Total value: $%.2f\n", totalValue)
 	fmt.Printf("Total tax: $%.2f (%.2f%%)\n", totalTax, taxRatePercentage)
 	fmt.Printf("\nTotal due: $%.2f\n", totalDue)
+	fmt.Printf("Payment method: %s\n", paymentMethod)
 	fmt.Println("------------------------------------------------")
 }
