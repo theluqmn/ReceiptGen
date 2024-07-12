@@ -112,6 +112,7 @@ func main() {
 	var totalDue float64
 
 	// Print receipt
+	clear()
 	fmt.Println("\n------------------------------------------------")
 	fmt.Println("Receipt for:", name)
 	fmt.Println("Issued at:", time.Now().Format("02-01-2006 15:04:05"))
