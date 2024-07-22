@@ -82,9 +82,9 @@ func main() {
 
 	clear()
 	fmt.Println("After entering your payment method,\nthe receipt will be outputted to the console.")
-	fmt.Println("Options:\n- [1] Cash\n- [2] Credit Card\n- [3] Debit Card\n- [4] E-Wallet")
+	fmt.Println("Options:\n- [1] Cash\n- [2] Credit Card\n- [3] Debit Card\n- [4] E-Wallet\n- [5] Pay later")
 
-	fmt.Printf("- Enter payment method [1-4]: ")
+	fmt.Printf("- Enter payment method [1-5]: ")
 	paymentMethod, _ = reader.ReadString('\n')
 	paymentMethod = strings.TrimSpace(paymentMethod)
 
@@ -102,6 +102,8 @@ func main() {
 		paymentMethod = "Debit Card"
 	} else if paymentMethodInt == 4 {
 		paymentMethod = "E-Wallet"
+	} else if paymentMethodInt == 5 {
+		paymentMethod = "Pay later"
 	} else {
 		fmt.Println("Invalid payment method")
 		return
