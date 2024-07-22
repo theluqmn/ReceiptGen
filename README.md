@@ -22,12 +22,15 @@ If you want the .exe, its on [Releases](https://github.com/luq-mn/ReceiptGen/rel
     * Credit Card
     * Debit Card
     * E-Wallet
+    * Pay later
 6. The full list will be outputted to the terminal, formatted like a receipt. Includes the total due, total price, and tax.
 
 ## To-do
 
 * [x] it works
 * [x] payment method
-* [ ] input validation
 * [x] output with more details
-* [ ] output as .txt
+* [x] pay later payment method
+* [ ] discounts on checkout
+* [ ] record purchases on a SQLite3 database
+* [ ] call previous purchases
