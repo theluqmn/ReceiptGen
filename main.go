@@ -30,7 +30,7 @@ func main() {
 	fmt.Println("Luq's ReceiptGen - Receipt Calculator/Generator")
 
 	// Get user input
-	fmt.Printf("- Enter your name: ")
+	fmt.Printf("(1/6) - Enter your name: ")
 	reader := bufio.NewReader(os.Stdin)
 	name, _ := reader.ReadString('\n')
 	name = strings.TrimSpace(name)
@@ -38,7 +38,7 @@ func main() {
 	itemList := list.New()
 
 	// Tax rate
-	fmt.Printf("- Enter tax rate percentage: ")
+	fmt.Printf("(2/6) - Enter tax rate percentage: ")
 	taxRateStr, _ := reader.ReadString('\n')
 	taxRateStr = strings.TrimSpace(taxRateStr)
 	taxRate, err:= strconv.ParseFloat(taxRateStr, 64)
@@ -49,7 +49,7 @@ func main() {
 	taxRate /= 100
 
 	// Items to add
-	fmt.Printf("- Amount of items to add: ")
+	fmt.Printf("(3/6) - Amount of items to add: ")
 	amountStr, _ := reader.ReadString('\n')
 	amountStr = strings.TrimSpace(amountStr)
 	amount, err := strconv.Atoi(amountStr)
@@ -59,7 +59,7 @@ func main() {
 	}
 
 	clear()
-	fmt.Println("Now, enter items.")
+	fmt.Println("(4/6) - Now, enter items.")
 
 	for i := 0; i < amount; i++ {
 		// Get item data
@@ -84,7 +84,7 @@ func main() {
 	fmt.Println("After entering your payment method,\nthe receipt will be outputted to the console.")
 	fmt.Println("Options:\n- [1] Cash\n- [2] Credit Card\n- [3] Debit Card\n- [4] E-Wallet\n- [5] Pay later")
 
-	fmt.Printf("- Enter payment method [1-5]: ")
+	fmt.Printf("(5/6) - Enter payment method [1-5]: ")
 	paymentMethod, _ = reader.ReadString('\n')
 	paymentMethod = strings.TrimSpace(paymentMethod)
 
@@ -109,6 +109,23 @@ func main() {
 		return
 	}
 
+	// Discount
+	var discount float64
+
+	clear()
+	fmt.Println("Enter discount percentage. Discount is applied before taxes.\nLeave blank for no discount.")
+	fmt.Printf("(6/6) - Enter discount percentage: ")
+	discountStr, _ := reader.ReadString('\n')
+	discountStr = strings.TrimSpace(discountStr)
+
+	if  discountStr == "" {
+		discount = 0
+	} else {
+		discount, err = strconv.ParseFloat(discountStr, 64)
+		discount /= 100
+	}
+
+	
 	var totalValue float64
 	var totalTax float64
 	var totalDue float64
@@ -131,11 +148,18 @@ func main() {
 		count++
 	}
 
-	totalDue = totalValue + totalTax
+	if discount != 0 {
+		totalDue = totalValue - (totalValue * discount)
+	} else {
+		totalDue = totalValue
+	}
+
+	totalDue += totalTax
 	taxRatePercentage := taxRate * 100
 
 	fmt.Println("------------------------------------------------")
 	fmt.Printf("Total value: $%.2f\n", totalValue)
+	fmt.Printf("\nDiscount: $%.2f (%.2f%%)\n", discount * totalValue, discount * 100)
 	fmt.Printf("Total tax: $%.2f (%.2f%%)\n", totalTax, taxRatePercentage)
 	fmt.Printf("\nTotal due: $%.2f\n", totalDue)
 	fmt.Printf("Payment method: %s\n", paymentMethod)

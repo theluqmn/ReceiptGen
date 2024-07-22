@@ -23,7 +23,8 @@ If you want the .exe, its on [Releases](https://github.com/luq-mn/ReceiptGen/rel
     * Debit Card
     * E-Wallet
     * Pay later
-6. The full list will be outputted to the terminal, formatted like a receipt. Includes the total due, total price, and tax.
+6. Enter your discount (enter blank to skip, 0-100%)
+7. The full list will be outputted to the terminal, formatted like a receipt. Includes the total due, total price, and tax.
 
 ## To-do
 
