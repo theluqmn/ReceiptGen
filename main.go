@@ -1,6 +1,9 @@
 package main
 
 import (
+	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
+
 	"bufio"
 	"fmt"
 	"os"
@@ -21,6 +24,83 @@ func clear() {
 	cmd := exec.Command("cmd", "/c", "cls")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
+}
+
+
+func storeInDB(name string, total float64, items *list.List) {
+	db, err := sql.Open("sqlite3", "receipt.db")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer db.Close()
+
+	// Create table
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS receipts (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		name TEXT,
+		total FLOAT,
+		timestamp TEXT
+	)`)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS items (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		receipt_id INTEGER,
+		item_name TEXT,
+		item_price FLOAT,
+		FOREIGN KEY(receipt_id) REFERENCES receipts(id)
+	)`)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// Start a transaction
+	tx, err := db.Begin()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// Insert into receipts table
+	result, err := tx.Exec(`INSERT INTO receipts (name, total, timestamp) VALUES (?, ?, ?)`,
+		name, total, time.Now().Format("02-01-2006 15:04:05"))
+	if err != nil {
+		tx.Rollback()
+		fmt.Println(err)
+		return
+	}
+
+	receiptID, err := result.LastInsertId()
+	if err != nil {
+		tx.Rollback()
+		fmt.Println(err)
+		return
+	}
+
+	// Insert items into items table
+	for e := items.Front(); e != nil; e = e.Next() {
+		item := e.Value.(Item)
+		_, err = tx.Exec(`INSERT INTO items (receipt_id, item_name, item_price) VALUES (?, ?, ?)`,
+			receiptID, item.name, item.price)
+		if err != nil {
+			tx.Rollback()
+			fmt.Println(err)
+			return
+		}
+	}
+
+	// Commit the transaction
+	err = tx.Commit()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 }
 
 func main() {
@@ -122,6 +202,11 @@ func main() {
 		discount = 0
 	} else {
 		discount, err = strconv.ParseFloat(discountStr, 64)
+		if err != nil {
+			fmt.Println("Invalid discount")
+			return
+		}
+
 		discount /= 100
 	}
 
@@ -156,6 +241,8 @@ func main() {
 
 	totalDue += totalTax
 	taxRatePercentage := taxRate * 100
+
+	storeInDB(name, totalDue, itemList)
 
 	fmt.Println("------------------------------------------------")
 	fmt.Printf("Total value: $%.2f\n", totalValue)

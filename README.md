@@ -33,5 +33,6 @@ If you want the .exe, its on [Releases](https://github.com/luq-mn/ReceiptGen/rel
 * [x] output with more details
 * [x] pay later payment method
 * [x] discounts on checkout
-* [ ] record purchases on a SQLite3 database
+* [x] record purchases on a SQLite3 database
+  * [ ] store in user data folder
 * [ ] call previous purchases
