@@ -105,7 +105,7 @@ func storeInDB(name string, total float64, items *list.List) {
 
 func main() {
 	clear()
-	fmt.Println("Hello, World!")
+	fmt.Println("we gonna cook some reciepts up baby")
 
 	fmt.Println("Luq's ReceiptGen - Receipt Calculator/Generator")
 
@@ -118,12 +118,12 @@ func main() {
 	itemList := list.New()
 
 	// Tax rate
-	fmt.Printf("(2/6) - Enter tax rate percentage: ")
+	fmt.Printf("(2/6) - Enter tax rate: ")
 	taxRateStr, _ := reader.ReadString('\n')
 	taxRateStr = strings.TrimSpace(taxRateStr)
 	taxRate, err:= strconv.ParseFloat(taxRateStr, 64)
 	if err != nil {
-		fmt.Println("Invalid tax rate")
+		fmt.Println("Invalid rate")
 		return
 	}
 	taxRate /= 100
@@ -139,7 +139,7 @@ func main() {
 	}
 
 	clear()
-	fmt.Println("(4/6) - Now, enter items.")
+	fmt.Println("(4/6) - Now, item names.")
 
 	for i := 0; i < amount; i++ {
 		// Get item data
@@ -161,10 +161,10 @@ func main() {
 	var paymentMethod string
 
 	clear()
-	fmt.Println("After entering your payment method,\nthe receipt will be outputted to the console.")
-	fmt.Println("Options:\n- [1] Cash\n- [2] Credit Card\n- [3] Debit Card\n- [4] E-Wallet\n- [5] Pay later")
+	fmt.Println("After using your payment method,\nthe receipt will be outputted to the console.")
+	fmt.Println("Options:\n- [1] Cash\n- [2] Card\n- [3] E-Wallet\n- [4] Pay later with Afterpay")
 
-	fmt.Printf("(5/6) - Enter payment method [1-5]: ")
+	fmt.Printf("(5/6) - Enter payment method [1-4]: ")
 	paymentMethod, _ = reader.ReadString('\n')
 	paymentMethod = strings.TrimSpace(paymentMethod)
 
@@ -177,13 +177,13 @@ func main() {
 	if paymentMethodInt == 1 {
 		paymentMethod = "Cash"
 	} else if paymentMethodInt == 2 {
-		paymentMethod = "Credit Card"
+		paymentMethod = "Card"
 	} else if paymentMethodInt == 3 {
-		paymentMethod = "Debit Card"
-	} else if paymentMethodInt == 4 {
 		paymentMethod = "E-Wallet"
+	} else if paymentMethodInt == 4 {
+		paymentMethod = "Afterpay"
 	} else if paymentMethodInt == 5 {
-		paymentMethod = "Pay later"
+		paymentMethod = "You screwed up"
 	} else {
 		fmt.Println("Invalid payment method")
 		return
@@ -218,8 +218,8 @@ func main() {
 	// Print receipt
 	clear()
 	fmt.Println("\n------------------------------------------------")
-	fmt.Println("Receipt for:", name)
-	fmt.Println("Issued at:", time.Now().Format("02-01-2006 15:04:05"))
+	fmt.Println("Receipt issued to:", name)
+	fmt.Println("On:", time.Now().Format("02-01-2006 15:04:05"))
 	fmt.Println("------------------------------------------------")
 	fmt.Printf("Items: %v\n\n", itemList.Len())
 
@@ -245,10 +245,10 @@ func main() {
 	storeInDB(name, totalDue, itemList)
 
 	fmt.Println("------------------------------------------------")
-	fmt.Printf("Total value: $%.2f\n", totalValue)
+	fmt.Printf("Subtotal: $%.2f\n", totalValue)
 	fmt.Printf("\nDiscount: $%.2f (%.2f%%)\n", discount * totalValue, discount * 100)
-	fmt.Printf("Total tax: $%.2f (%.2f%%)\n", totalTax, taxRatePercentage)
-	fmt.Printf("\nTotal due: $%.2f\n", totalDue)
+	fmt.Printf("Tax: $%.2f (%.2f%%)\n", totalTax, taxRatePercentage)
+	fmt.Printf("\nTotal: $%.2f\n", totalDue)
 	fmt.Printf("Payment method: %s\n", paymentMethod)
 	fmt.Println("------------------------------------------------")
 }
